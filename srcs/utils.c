@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:46:11 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/23 18:49:11 by soutin           ###   ########.fr       */
+/*   Updated: 2024/01/25 20:43:32 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,29 @@ int	ft_usleep(size_t milliseconds)
 	while ((get_current_time() - start) < milliseconds)
 		usleep(500);
 	return (0);
+}
+
+void	ft_putnbr(int nb)
+{
+	int	c;
+	
+	if (nb < 0)
+	{
+		write(1, "-", 1);
+		ft_putnbr(-nb);
+	}
+	if (nb > 9)
+		ft_putnbr(nb / 10);
+	c = 48 + nb % 10;
+	write(1, &c, 1);
+}
+
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
 }
