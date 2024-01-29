@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:46:11 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/25 20:43:32 by soutin           ###   ########.fr       */
+/*   Updated: 2024/01/29 19:55:14 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,25 +55,6 @@ int	ft_atoi(const char *nptr)
 	return (number * sign);
 }
 
-int check_digit(char **str)
-{
-    int i;
-    int j;
-
-    i = 1;
-    while (str[i])
-    {
-        j = 0;
-        while (str[i][j])
-        {
-            if (!(str[i][j] >= 48 && str[i][j] <= 57))
-	    	    return (1);
-            j++;
-        }
-        i++;
-    }
-    return (0);
-}
 
 size_t	get_current_time(void)
 {
@@ -84,19 +65,27 @@ size_t	get_current_time(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-int	ft_usleep(size_t milliseconds)
+int	ft_usleep(size_t milliseconds, t_philo *philo)
 {
 	size_t	start;
 
 	start = get_current_time();
-	while ((get_current_time() - start) < milliseconds)
+	pthread_mutex_lock(&philo->shared->m_dead);
+	while ((get_current_time() - start) < milliseconds && !philo->shared->dead)
+	{
+		pthread_mutex_unlock(&philo->shared->m_dead);
 		usleep(500);
+		pthread_mutex_lock(&philo->shared->m_dead);
+	}
+	pthread_mutex_unlock(&philo->shared->m_dead);
+	if (philo->shared->dead)
+		return (1);
 	return (0);
 }
 
-void	ft_putnbr(int nb)
+void	ft_putnbr(long nb)
 {
-	int	c;
+	long	c;
 	
 	if (nb < 0)
 	{

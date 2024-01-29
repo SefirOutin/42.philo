@@ -4,16 +4,15 @@ HEADER		=	include/
 
 NAME 		=	philo
 
-SRCS		=	srcs/main.c \
-				srcs/utils.c
+SRCS		=	srcs/main.c srcs/utils.c srcs/init.c srcs/actions_functions.c srcs/monitoring.c
 
 OBJS		=	$(SRCS:$(SRCS)/%.c=$(OBJS_DIR)/%.o)
 
 CPPFLAGS	=	-I $(HEADER)
-CFLAGS		=	-Wall -Werror -Werror -g3 -O3 -pthread
+CFLAGS		=	-Wall -Werror -Werror -g3 -O3 -pthread #-fsanitize=thread  
 
 $(NAME):		$(OBJS) $(HEADER)
-					cc $(CFLAGS) $(CPPFLAGS) $(OBJS) -o $(NAME)
+					clang $(CFLAGS) $(CPPFLAGS) $(OBJS) -o $(NAME)
 
 # $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.c | $(OBJS_DIR)
 # 	cc $(CPPFLAGS) $(CFLAGS) -c $< -o $@
