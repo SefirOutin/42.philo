@@ -9,7 +9,7 @@ SRCS		=	srcs/main.c srcs/utils.c srcs/init.c srcs/actions_functions.c srcs/monit
 OBJS		=	$(SRCS:$(SRCS)/%.c=$(OBJS_DIR)/%.o)
 
 CPPFLAGS	=	-I $(HEADER)
-CFLAGS		=	-Wall -Werror -Werror -g3 -O3 -pthread #-fsanitize=thread  
+CFLAGS		=	-Wall -Werror -Werror -g3 -O3 -pthread -fsanitize=thread #-ltsan #TSAN_OPTIONS=second_deadlock_stack=1 
 
 $(NAME):		$(OBJS) $(HEADER)
 					clang $(CFLAGS) $(CPPFLAGS) $(OBJS) -o $(NAME)

@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:47:46 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:01:23 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/08 18:11:55 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int check_digit(char **str)
     return (0);
 }
 
-int	check_and_fill(t_shared *vars, int c, char **v)
+int	fill_shared_vars(t_shared *vars, int c, char **v)
 {
 	memset(vars, 0, sizeof(t_shared));
     vars->start = get_current_time();
@@ -43,7 +43,7 @@ int	check_and_fill(t_shared *vars, int c, char **v)
 	vars->notepme = -1;
 	if (c == 6)
 		vars->notepme = ft_atoi(v[5]);
-	if (!vars->nb_philos || !vars->time_to_die || !vars->time_to_eat)
+	if (vars->nb_philos < 1 || vars->time_to_die < 1 || vars->time_to_eat < 1)
 		return (1);
 	if (pthread_mutex_init(&vars->m_dead, NULL)
 		|| pthread_mutex_init(&vars->m_eat, NULL)
@@ -58,7 +58,7 @@ int	parsing_and_init(t_philo *philos, t_shared *vars, char **v, int c)
     int start;
 
 	i = 0;
-	if ((c < 5 || c > 6) || check_digit(v) || check_and_fill(vars, c, v))
+	if ((c < 5 || c > 6) || check_digit(v) || fill_shared_vars(vars, c, v))
 		return (1);
 	start = get_current_time();
     while (i < vars->nb_philos)

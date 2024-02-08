@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 17:33:22 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:58:07 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/08 18:40:53 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,51 +29,61 @@ int	mutex_write(t_philo *philo, char *str)
 
 int	wants_to_eat(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->fork_r);
-	if (mutex_write(philo, " has taken a fork\n"))
-		return (pthread_mutex_unlock(&philo->fork_r), 1);
-	pthread_mutex_lock(philo->fork_l);
-	if (mutex_write(philo, " has taken a fork\n"))
-		return (pthread_mutex_unlock(philo->fork_l),
-				pthread_mutex_unlock(&philo->fork_r),
-				1);
-	mutex_write(philo, " is eating\n");
+	if (philo->id % 2 != 0)
+	{
+		pthread_mutex_lock(&philo->fork_r);
+		mutex_write(philo, " has taken a fork\n");
+		pthread_mutex_lock(philo->fork_l);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->fork_l);
+		mutex_write(philo, " has taken a fork\n");
+		pthread_mutex_lock(&philo->fork_r);
+	}
+	mutex_write(philo, " has taken a fork\n");
 	pthread_mutex_lock(&philo->shared->m_eat);
+	mutex_write(philo, " is eating\n");
 	philo->last_time_ate = get_current_time();
 	philo->count_times_eating++;
-	// printf("id : %d nb ate : %zu\n", philo->id, philo->count_times_eating);
 	pthread_mutex_unlock(&philo->shared->m_eat);
-	if (ft_usleep(philo->shared->time_to_eat, philo))
-		return (1);
-	pthread_mutex_unlock(philo->fork_l);
-	pthread_mutex_unlock(&philo->fork_r);
+	ft_usleep(philo->shared->time_to_eat, philo);
+	if (philo->id % 2 != 0)
+		(pthread_mutex_unlock(philo->fork_l),
+			pthread_mutex_unlock(&philo->fork_r));
+	else
+		(pthread_mutex_unlock(&philo->fork_r),
+			pthread_mutex_unlock(philo->fork_l));
 	return (0);
 }
+
+
 
 void	*routine_philos(void *arg)
 {
 	t_philo	*philo;
-	int		i;
 
-	i = 0;
 	philo = arg;
 	if (philo->id % 2 == 0)
-		ft_usleep(10 , philo);
+		ft_usleep(1, philo);
 	while (1)
 	{
+		wants_to_eat(philo);
+		mutex_write(philo, " is sleeping\n");
+		ft_usleep(philo->shared->time_to_sleep, philo);
+		mutex_write(philo, " is thinking\n");
+		if (philo->shared->notepme > -1)
+		{
+			pthread_mutex_lock(&philo->shared->m_eat);
+			if (philo->count_times_eating == philo->shared->notepme)
+				return (pthread_mutex_unlock(&philo->shared->m_eat), NULL);
+			pthread_mutex_unlock(&philo->shared->m_eat);
+		}
 		pthread_mutex_lock(&philo->shared->m_dead);
 		if (philo->shared->dead)
 			break ;
 		pthread_mutex_unlock(&philo->shared->m_dead);
-	// 	// printf("dead ? %d\n", philo->shared->dead);
-	// 	// printf("id : %d i : %d\n", philo->id, i);
-		i++;
-		wants_to_eat(philo);
-		mutex_write(philo, " is sleeping\n");
-		ft_usleep(philo->shared->time_to_sleep, philo);
-		// pthread_mutex_lock(&philo->shared->m_dead);
 	}
-	printf("11111111111111111111\n");
-	// pthread_mutex_unlock(&philo->shared->m_eat);
+	pthread_mutex_unlock(&philo->shared->m_dead);
 	return (NULL);
 }

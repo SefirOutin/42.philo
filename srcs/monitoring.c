@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 15:33:49 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:13:34 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/08 17:35:49 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,13 @@ int	enough_times_eating(t_philo *philos)
 	{
 		pthread_mutex_lock(&philos[i].shared->m_eat);
         // printf("id : %d nb ate : %d\n", philos[i].id, philos[i].count_times_eating);
+		// printf("id : %d nb_eaten : %zu\n", philos[i].id, philos[i].count_times_eating);
 		if (philos[i].count_times_eating < philos[i].shared->notepme)
 			return (pthread_mutex_unlock(&philos[i].shared->m_eat), 0);
 		pthread_mutex_unlock(&philos[i].shared->m_eat);
 		i++;
 	}
-	mutex_write(&philos[0], " fini\n");
+	// mutex_write(&philos[0], " fini\n");
     pthread_mutex_lock(&philos[0].shared->m_dead);
 	philos[0].shared->dead = true;
 	pthread_mutex_unlock(&philos[0].shared->m_dead);
@@ -70,6 +71,6 @@ void	*routine_monitoring(void *arg)
 		if (is_dead(philos) || enough_times_eating(philos))
 			break ;
 	}
-	printf("222222222222222222\n");
+	// printf("222222222222222222\n");
     return (NULL);
 }

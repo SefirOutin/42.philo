@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 17:03:19 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:28:22 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/08 18:37:14 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,9 @@ int	join_threads(t_philo *philos)
 	while (i < philos[0].shared->nb_philos)
 	{
 		// printf("la\n");
-		if (pthread_join(philos[i].philo, NULL) < 0)
-		{
-			printf("ookokokokokokok\n");
+		if (pthread_join(philos[i].philo, NULL))
 			return (1);
-		}
+		// printf("retval : %d\n", *ret);
 		i++;
 	}
 	return (0);
@@ -43,8 +41,8 @@ int	create_philos(t_philo *philos)
 		i++;
 	}
 	// printf("la--------------\n\n\n\n\n\n");
-	if (join_threads(philos))
-		return (1);
+	// if (join_threads(philos))
+	// 	return (1);
 	return (0);
 }
 
@@ -78,6 +76,8 @@ int	main(int c, char **v)
 		// printf("la\n");
 		if (pthread_join(monitor, NULL) < 0)
 			printf("ok1111111\n");
+		if (join_threads(philos))
+			return (1);
 		destroy(philos);	
 	}
 	else
