@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/27 15:47:46 by soutin            #+#    #+#             */
-/*   Updated: 2024/02/08 18:11:55 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/14 16:11:29 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ int	parsing_and_init(t_philo *philos, t_shared *vars, char **v, int c)
 	start = get_current_time();
     while (i < vars->nb_philos)
 	{
-        // printf("init i : %d nb_philos : %d\n", i, vars->nb_philos);
 		memset(&philos[i], 0, sizeof(t_philo));
 		philos[i].id = i + 1;
 		philos[i].shared = vars;

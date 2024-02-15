@@ -6,11 +6,27 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:46:11 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:55:14 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/14 19:00:47 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s1 || !s2)
+		return (-1);
+	while ((s1[i] || s2[i]) && i < n)
+	{
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
+}
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
@@ -74,14 +90,25 @@ int	ft_usleep(size_t milliseconds, t_philo *philo)
 	while ((get_current_time() - start) < milliseconds && !philo->shared->dead)
 	{
 		pthread_mutex_unlock(&philo->shared->m_dead);
-		usleep(500);
+		usleep(1000);
 		pthread_mutex_lock(&philo->shared->m_dead);
 	}
 	pthread_mutex_unlock(&philo->shared->m_dead);
-	if (philo->shared->dead)
-		return (1);
 	return (0);
 }
+
+// void	ft_usleep(long int usleeep, t_shared *data)
+// {
+// 	long int	time;
+
+// 	time = get_timestamp();
+// 	while (get_timestamp() - time < usleeep)
+// 	{
+// 		if (is_dead() == 1)
+// 			return ;
+// 		usleep(10);
+// 	}
+// }
 
 void	ft_putnbr(long nb)
 {

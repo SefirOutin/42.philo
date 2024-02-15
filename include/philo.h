@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:05 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/29 19:01:03 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/09 17:45:42 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,6 @@ void				*routine_philos(void *arg);
 
 int					mutex_write(t_philo *philo, char *str);
 int					wants_to_eat(t_philo *philo);
+int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/29 15:33:49 by soutin            #+#    #+#             */
-/*   Updated: 2024/02/08 17:35:49 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/09 17:49:58 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,6 @@ int	is_dead(t_philo *philos)
 		{
 			pthread_mutex_unlock(&philos[0].shared->m_eat);
     		mutex_write(&philos[i], " died\n");
-			pthread_mutex_lock(&philos[i].shared->m_dead);
-			philos[i].shared->dead = true;
-    		pthread_mutex_unlock(&philos[i].shared->m_dead);
 			return (1);
 		}
 		pthread_mutex_unlock(&philos[0].shared->m_eat);
