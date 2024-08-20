@@ -6,7 +6,7 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 16:57:05 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/23 19:48:48 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/09 17:45:42 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,47 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef struct s_philo
+typedef struct s_shared
 {
-	pthread_t		philo;
-	int				id;
+	pthread_mutex_t	m_dead;
+	pthread_mutex_t	m_eat;
+	pthread_mutex_t	m_write;
+	bool			dead;
 	int				nb_philos;
 	int				time_to_die;
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				notepme;
-	pthread_mutex_t	fork_l;
-	pthread_mutex_t	fork_r;
 	size_t			start;
-	pthread_mutex_t	dead_lock;
-	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	write_lock;
-}					t_philo;
+}					t_shared;
 
-typedef struct	s_actions
+typedef struct s_philo
 {
-	pthread_mutex_t	dead_lock;
-	pthread_mutex_t	eat_lock;
-	pthread_mutex_t	write_lock;
-	bool			dead;
-}					t_actions;
+	pthread_t		philo;
+	int				id;
+	size_t			count_times_eating;
+	size_t			last_time_ate;
+	pthread_mutex_t	*fork_l;
+	pthread_mutex_t	fork_r;
+	t_shared		*shared;
+}					t_philo;
 
 int					check_digit(char **str);
 int					ft_atoi(const char *nptr);
 void				*ft_calloc(size_t nmemb, size_t size);
+size_t				get_current_time(void);
+int					ft_usleep(size_t milliseconds, t_philo *philos);
+int					ft_strlen(char *str);
+void				ft_putnbr(long nb);
+
+int					parsing_and_init(t_philo *philos, t_shared *vars, char **v,
+						int c);
+
+void				*routine_monitoring(void *arg);
+void				*routine_philos(void *arg);
+
+int					mutex_write(t_philo *philo, char *str);
+int					wants_to_eat(t_philo *philo);
+int					ft_strncmp(const char *s1, const char *s2, size_t n);
 
 #endif

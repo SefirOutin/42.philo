@@ -6,11 +6,27 @@
 /*   By: soutin <soutin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/22 18:46:11 by soutin            #+#    #+#             */
-/*   Updated: 2024/01/23 18:49:11 by soutin           ###   ########.fr       */
+/*   Updated: 2024/02/15 19:00:54 by soutin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (!s1 || !s2)
+		return (-1);
+	while ((s1[i] || s2[i]) && i < n)
+	{
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
+	}
+	return (0);
+}
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
@@ -55,26 +71,6 @@ int	ft_atoi(const char *nptr)
 	return (number * sign);
 }
 
-int check_digit(char **str)
-{
-    int i;
-    int j;
-
-    i = 1;
-    while (str[i])
-    {
-        j = 0;
-        while (str[i][j])
-        {
-            if (!(str[i][j] >= 48 && str[i][j] <= 57))
-	    	    return (1);
-            j++;
-        }
-        i++;
-    }
-    return (0);
-}
-
 size_t	get_current_time(void)
 {
 	struct timeval	time;
@@ -84,12 +80,18 @@ size_t	get_current_time(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-int	ft_usleep(size_t milliseconds)
+int	ft_usleep(size_t milliseconds, t_philo *philo)
 {
 	size_t	start;
 
 	start = get_current_time();
-	while ((get_current_time() - start) < milliseconds)
-		usleep(500);
+	pthread_mutex_lock(&philo->shared->m_dead);
+	while ((get_current_time() - start) < milliseconds && !philo->shared->dead)
+	{
+		pthread_mutex_unlock(&philo->shared->m_dead);
+		usleep(1000);
+		pthread_mutex_lock(&philo->shared->m_dead);
+	}
+	pthread_mutex_unlock(&philo->shared->m_dead);
 	return (0);
 }
